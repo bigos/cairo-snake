@@ -1,5 +1,5 @@
 -- | An example module.
-module Example (main) where
+module Snake (main) where
 
 -- | An example function.
 main :: IO ()
