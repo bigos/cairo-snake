@@ -5,6 +5,11 @@ import qualified Test.Tasty
 -- Hspec is one of the providers for Tasty. It provides a nice syntax for
 -- writing tests. Its website has more info: <https://hspec.github.io>.
 import Test.Tasty.Hspec
+-- This adds quickCheck tests
+import Test.Tasty.QuickCheck as QC
+
+import Data.List
+import Data.Ord
 
 main :: IO ()
 main = do
@@ -15,3 +20,5 @@ spec :: Spec
 spec = parallel $ do
     it "is trivially true" $ do
         True `shouldBe` True
+    it "works on greater" $ do
+      (2 > 1) `shouldBe` True
