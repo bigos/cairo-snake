@@ -7,9 +7,9 @@ github: "bigos/cairo-snake"
 license: MIT
 author: "Jacek Podkanski"
 maintainer: "Jacek Podkanski"
-# synopsis: A new Haskeleton package.
-# description: cairo-snake is a new Haskeleton package.
-# category: Other
+synopsis: Snake game
+description: cairo-snake is a snake game written using Cairo and Gtk libraries
+category: Game
 
 extra-source-files:
 - CHANGELOG.md
