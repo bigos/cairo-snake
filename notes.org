@@ -1,0 +1,31 @@
+* Notes
+
+** Example
+https://github.com/haskell-gi/gi-gtk-examples/blob/master/carsim/CarSim.hs
+
+https://gist.github.com/noinia/afda0895dfc47b294c1a4034b1e0a5fb
+
+https://hackage.haskell.org/package/cairo-0.13.5.0/src/demo/gtk3/Drawing.hs
+
+https://hackage.haskell.org/package/cairo-0.13.5.0/src/
+
+https://hackage.haskell.org/package/gi-cairo-1.0.15/docs/GI-Cairo.html
+
+https://github.com/haskell-gi/haskell-gi/wiki/Using-Cairo-with-haskell-gi-generated-bindings
+
+https://github.com/haskell-gi/haskell-gi/blob/master/examples/advanced/Cairo.hs
+
+
+** Documentation
+
+https://hackage.haskell.org/package/gi-gtk-3.0.18/docs/doc-index-All.html
+
+** Emacs
+
+Menu Haskell/Load file seems to load all the imports.
+
+** Strange problems
+
+When you have a problem with missing Cairo libraries and REPL doesn't see the
+new libraries, it might be worth to close the REPL and start new one after
+running stack install

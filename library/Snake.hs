@@ -3,14 +3,12 @@ module Snake (main) where
 
 -- imports ----------------------------------------
 
-import Debug.Trace
+-- import Debug.Trace
 import System.Random
 import Data.IORef ( IORef
                   , newIORef
                   , readIORef
-                  , writeIORef
-                  , atomicModifyIORef'
-                  , modifyIORef' )
+                  , atomicModifyIORef' )
 import Control.Monad.Trans.Reader (runReaderT)
 import           Foreign.Ptr (castPtr)
 
@@ -66,7 +64,7 @@ data Model = Model {
   , snakeLength :: Int
   , heading :: Heading
   , height :: Int
-  , lastKey :: LastKey        -- different in elm version
+  , lastKey :: LastKey        -- different in Elm version
   , scale :: Int
   , snake :: Snake
   , tickInterval :: Float
@@ -75,7 +73,6 @@ data Model = Model {
   } deriving (Show)
 
 data Heading = HeadingLeft | HeadingUp | HeadingRight | HeadingDown | None deriving (Eq, Show)
-data KeyControl = KeyPause | KeyLeft | KeyUp | KeyRight | KeyDown | KeyOther
 
 initialModel :: Model
 initialModel = Model { debugData = []
@@ -112,11 +109,16 @@ foodUnderHead c model =
         -- snake head at this stage is different from cook model
         -- second element of the snake is being eaten
 foodEaten :: Model -> Bool
-foodEaten model | trace ("tracing head -> "++(show (head (snake model), (foodItems model)))) True =
-  any id (map (\c -> (fst c)==cx && (snd c)==cy) (foodItems model))
+foodEaten model =
+  any id (map mapper (foodItems model))
   where hsm = head (snake model)
+        nsm = head $ tail (snake model)
         cx = fst hsm
         cy = snd hsm
+        ccx = fst nsm
+        ccy = snd nsm
+        mapper c = ((fst c)==cx && (snd c)==cy ||
+                    ((fst c)==ccx && (snd c)==ccy))
 
 headBitSnake :: Model -> Bool
 headBitSnake model = any id (map (\c -> (fst c) == cx && (snd c) == cy) (drop 1 (snake model)))
@@ -125,7 +127,7 @@ headBitSnake model = any id (map (\c -> (fst c) == cx && (snd c) == cy) (drop 1 
         cy = snd hsm
 
 headHitWall :: Model -> Bool
-headHitWall model = False -- TODO: finish me
+headHitWall _ = False -- TODO: finish me
 
 detectCollision :: Model -> GameField
 detectCollision model =
@@ -221,7 +223,7 @@ updateGlobalModel (Tick) rawModel = updateTickFields model
   where model = cook rawModel
         moreFood model' =
           if ((foodItems model') == [])
-          then (randomCoord (10, 5) (seed model))
+          then (randomCoord (13, 13) (seed model))
           else foodItems model'
         updateTickFields m = m { gameField = updateGamefield False model (lastKey model)
                                , foodItems = moreFood model
@@ -301,7 +303,7 @@ keyPressFun globalModel canvas rkv = do
     _ <- atomicModifyIORef' globalModel $ \i -> do
       ((updateGlobalModel (Keypress (fromIntegral kv)) i), ())
     -- force redrawing of canvas widget
-    -- Gtk.widgetQueueDraw canvas
+    Gtk.widgetQueueDraw canvas
     ov <- readIORef globalModel
     putStrLn ("You have pressed key code " ++ (show kv) ++ " " ++ (show ov))
     pure True
