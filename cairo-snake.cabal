@@ -1,0 +1,96 @@
+-- This file has been generated from package.yaml by hpack version 0.20.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: c093a3391718c7a4bfee6bdcce47f9a7154984bdd43d69b9505567c1588ca92e
+
+name:           cairo-snake
+version:        0.0.0
+synopsis:       Snake game
+description:    cairo-snake is a snake game written using Cairo and Gtk libraries
+category:       Game
+homepage:       https://github.com/bigos/cairo-snake#readme
+bug-reports:    https://github.com/bigos/cairo-snake/issues
+author:         Jacek Podkanski
+maintainer:     Jacek Podkanski
+license:        MIT
+build-type:     Simple
+cabal-version:  >= 1.10
+
+extra-source-files:
+    CHANGELOG.md
+    LICENSE.md
+    package.yaml
+    README.md
+    stack.yaml
+
+source-repository head
+  type: git
+  location: https://github.com/bigos/cairo-snake
+
+library
+  hs-source-dirs:
+      library
+  ghc-options: -Wall
+  build-depends:
+                base
+              , gi-gtk >= 3.0
+              , haskell-gi-base -any
+              , gi-glib -any
+              , gi-gtk -any
+              , gi-gtk-hs >= 0.3.4.1 && < 0.4
+              , gi-gdk -any
+              , transformers -any
+              , array -any
+              , gi-cairo -any
+              , random -any
+              , cairo >=0.13.1.1 && <0.14
+  exposed-modules:
+      Snake
+  other-modules:
+      Paths_cairo_snake
+  default-language: Haskell2010
+
+executable cairo-snake
+  main-is: Main.hs
+  hs-source-dirs:
+      executable
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+      base
+    , cairo-snake
+  other-modules:
+      Paths_cairo_snake
+  default-language: Haskell2010
+
+test-suite cairo-snake-test-suite
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  hs-source-dirs:
+      test-suite
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+                base
+              , cairo-snake
+              , tasty
+              , tasty-smallcheck
+              , tasty-quickcheck
+              , tasty-hunit
+              , tasty-hspec
+  other-modules:
+      Paths_cairo_snake
+  default-language: Haskell2010
+
+benchmark cairo-snake-benchmarks
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  hs-source-dirs:
+      benchmark
+  ghc-options: -Wall -rtsopts -threaded -with-rtsopts=-N
+  build-depends:
+      base
+    , cairo-snake
+    , criterion
+  other-modules:
+      Paths_cairo_snake
+  default-language: Haskell2010
