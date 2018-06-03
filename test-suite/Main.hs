@@ -6,6 +6,8 @@ import Test.Tasty.HUnit
 import Data.List
 import Data.Ord
 
+import Snake (shrink)
+
 main = defaultMain tests
 
 tests :: TestTree
@@ -36,6 +38,9 @@ qcProps = testGroup "(checked by QuickCheck)"
         (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
   , QC.testProperty "my addition" $ -- my first quickCheck
     \x -> (((x :: Integer) + 1) > x) == True
+  , QC.testProperty "Fermat's last theorem 2" $
+    \x y z n ->
+      (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
   ]
 
 unitTests = testGroup "Unit tests"

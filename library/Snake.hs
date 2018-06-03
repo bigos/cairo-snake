@@ -1,4 +1,4 @@
-module Snake (main) where
+module Snake (main, shrink) where
 
 
 -- imports ----------------------------------------
