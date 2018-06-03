@@ -30,19 +30,12 @@ scProps = testGroup "(checked by SmallCheck)"
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "sort == sort . reverse" $
       \list -> sort (list :: [Int]) == sort (reverse list)
-  , QC.testProperty "Fermat's little theorem" $
-      \x -> ((x :: Integer)^7 - x) `mod` 7 == 0
-  -- the following property does not hold
-  , QC.testProperty "Fermat's last theorem" $
-      \x y z n ->
-        (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
   , QC.testProperty "shrink above zero" $
-    \x -> (x) >= 0 QC.==> shrink x == (x - 1)
+    \x -> (x) >= 1 QC.==> Snake.shrink x == (x - 1)
+  , QC.testProperty "shrink below zero" $
+    \x -> (x) < 0 QC.==> Snake.shrink x == 0
   , QC.testProperty "my addition" $ -- my first quickCheck
     \x -> (((x :: Integer) + 1) > x) == True
-  , QC.testProperty "Fermat's last theorem 2" $
-    \x y z n ->
-      (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
   ]
 
 unitTests = testGroup "Unit tests"
