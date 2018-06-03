@@ -29,3 +29,23 @@ Menu Haskell/Load file seems to load all the imports.
 When you have a problem with missing Cairo libraries and REPL doesn't see the
 new libraries, it might be worth to close the REPL and start new one after
 running stack install
+
+** Debugging
+Open Snake.hs file
+Haskell menu Load file
+
+REPL running
+:reload
+:load Snake
+main
+
+REPL debugging
+:break cook
+main
+:show bindings
+:step
+:show context
+:continue
+:print model
+:sprint model
+:delete *

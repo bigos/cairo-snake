@@ -36,6 +36,8 @@ qcProps = testGroup "(checked by QuickCheck)"
   , QC.testProperty "Fermat's last theorem" $
       \x y z n ->
         (n :: Integer) >= 3 QC.==> x^n + y^n /= (z^n :: Integer)
+  , QC.testProperty "shrink above zero" $
+    \x -> (x) >= 0 QC.==> shrink x == (x - 1)
   , QC.testProperty "my addition" $ -- my first quickCheck
     \x -> (((x :: Integer) + 1) > x) == True
   , QC.testProperty "Fermat's last theorem 2" $
