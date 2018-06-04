@@ -99,7 +99,7 @@ shrink :: Int -> Int
 shrink n = if (n-1) > 0 then n-1 else 0
 
 equalCoordinates :: Coordinate -> Coordinate -> Bool
-equalCoordinates c1 c2 = (fst c1) == (fst c2) && (snd c1) == (snd c2)
+equalCoordinates c1 c2 = c1 == c2
 
 foodUnderHead :: Coordinate -> Model -> Bool
 foodUnderHead c model = equalCoordinates c hsm
@@ -116,11 +116,10 @@ foodEaten model =
         cy = snd hsm
         ccx = fst nsm
         ccy = snd nsm
-        mapper c = ((fst c)==cx && (snd c)==cy ||
-                    ((fst c)==ccx && (snd c)==ccy))
+        mapper c = (c == (cx, cy) || c == (ccx, ccy))
 
 headBitSnake :: Model -> Bool
-headBitSnake model = any id (map (\c -> (fst c) == cx && (snd c) == cy) (drop 1 (snake model)))
+headBitSnake model = any id (map (\c -> c == (cx, cy))  (drop 1 (snake model)))
   where hsm = head (snake model)
         cx = fst hsm
         cy = snd hsm
