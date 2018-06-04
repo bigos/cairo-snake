@@ -98,31 +98,19 @@ initGlobalModel = newIORef initialModel
 shrink :: Int -> Int
 shrink n = if (n-1) > 0 then n-1 else 0
 
-equalCoordinates :: Coordinate -> Coordinate -> Bool
-equalCoordinates c1 c2 = c1 == c2
-
 foodUnderHead :: Coordinate -> Model -> Bool
-foodUnderHead c model = equalCoordinates c hsm
-  where hsm = head (snake model)
+foodUnderHead c model = any id $ map (\x-> c == x) (take 3 (snake model))
 
-        -- snake head at this stage is different from cook model
-        -- second element of the snake is being eaten
 foodEaten :: Model -> Bool
-foodEaten model =
-  any id (map mapper (foodItems model))
-  where hsm = head (snake model)
-        nsm = head $ tail (snake model)
-        cx = fst hsm
-        cy = snd hsm
-        ccx = fst nsm
-        ccy = snd nsm
-        mapper c = (c == (cx, cy) || c == (ccx, ccy))
+foodEaten model = members (foodItems model) (take 5 (snake model))
+
+member e l = any id $ map (\x -> x == e) l
+
+members ee l = any id $ map (\e -> member e l) ee
 
 headBitSnake :: Model -> Bool
-headBitSnake model = any id (map (\c -> c == (cx, cy))  (drop 1 (snake model)))
+headBitSnake model = any id (map (\c -> c == hsm) (drop 1 (snake model)))
   where hsm = head (snake model)
-        cx = fst hsm
-        cy = snd hsm
 
 headHitWall :: Model -> Bool
 headHitWall _ = False -- TODO: finish me
@@ -210,11 +198,11 @@ cook model =
   then model { gameField = detectCollision model
              , snakeLength = (snakeLength model) +3
              , foodItems = filter (\c -> not (foodUnderHead c model)) (foodItems model)
-             , debugData = [""]
+             , debugData = ["" ++ (show ("food",foodItems model,"snake", (snake model)))]
              , eaten = (eaten model) + 1 }
   else model { gameField = detectCollision model
              , snakeLength = shrink (snakeLength model)
-             , debugData = (debugData model) ++ [ "."] }
+             , debugData = (debugData model) }
 
 updateGlobalModel :: Msg -> Model -> Model
 updateGlobalModel (Tick) rawModel = updateTickFields model
@@ -287,12 +275,8 @@ timerFun g c = do
 drawFun :: IORef Model -> Gtk.DrawingArea -> GICairo.Context -> IO Bool
 drawFun globalModel canvas context = do
   model <- readIORef globalModel
-  logger model >> renderWithContext context (drawCanvas canvas model)
+  renderWithContext context (drawCanvas canvas model)
   pure True
-  where logger model =
-          if (gameField model) == Pause
-          then putStr ""
-          else putStrLn ("tick " ++ (show model))
 
 keyPressFun :: IORef Model -> Gtk.DrawingArea -> GI.Gdk.Structs.EventKey.EventKey -> IO Bool
 keyPressFun globalModel canvas rkv = do
