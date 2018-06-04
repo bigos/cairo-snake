@@ -196,7 +196,7 @@ cook :: Model -> Model
 cook model =
   if foodEaten model
   then model { gameField = detectCollision model
-             , snakeLength = (snakeLength model) +3
+             , snakeLength = (snakeLength model) +1
              , foodItems = filter (\c -> not (foodUnderHead c model)) (foodItems model)
              , debugData = ["" ++ (show ("food",foodItems model,"snake", (snake model)))]
              , eaten = (eaten model) + 1 }
