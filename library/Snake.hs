@@ -91,7 +91,6 @@ initialModel = Model { debugData = []
 
 -- in the above example Snake.height is explained here with following text
 -- https://en.wikibooks.org/wiki/Haskell/More_on_datatypes
--- This will automatically generate the following accessor functions for us:
 
 initGlobalModel :: IO (IORef Model)
 initGlobalModel = newIORef initialModel
@@ -99,12 +98,12 @@ initGlobalModel = newIORef initialModel
 shrink :: Int -> Int
 shrink n = if (n-1) > 0 then n-1 else 0
 
+equalCoordinates :: Coordinate -> Coordinate -> Bool
+equalCoordinates c1 c2 = (fst c1) == (fst c2) && (snd c1) == (snd c2)
+
 foodUnderHead :: Coordinate -> Model -> Bool
-foodUnderHead c model =
-  (fst c)==cx && (snd c)==cy
+foodUnderHead c model = equalCoordinates c hsm
   where hsm = head (snake model)
-        cx = fst hsm
-        cy = snd hsm
 
         -- snake head at this stage is different from cook model
         -- second element of the snake is being eaten
