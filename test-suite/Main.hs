@@ -1,7 +1,5 @@
 import Test.Tasty
-import Test.Tasty.SmallCheck as SC
 import Test.Tasty.QuickCheck as QC
-import Test.Tasty.HUnit
 
 import Data.List
 import Data.Ord
@@ -11,21 +9,10 @@ import Snake (shrink)
 main = defaultMain tests
 
 tests :: TestTree
-tests = testGroup "Tests" [properties, unitTests]
+tests = testGroup "Tests" [properties]
 
 properties :: TestTree
-properties = testGroup "Properties" [scProps, qcProps]
-
-scProps = testGroup "(checked by SmallCheck)"
-  [ SC.testProperty "sort == sort . reverse" $
-      \list -> sort (list :: [Int]) == sort (reverse list)
-  , SC.testProperty "Fermat's little theorem" $
-      \x -> ((x :: Integer)^7 - x) `mod` 7 == 0
-  -- the following property does not hold
-  , SC.testProperty "Fermat's last theorem" $
-      \x y z n ->
-        (n :: Integer) >= 3 SC.==> x^n + y^n /= (z^n :: Integer)
-  ]
+properties = testGroup "Properties" [ qcProps]
 
 qcProps = testGroup "(checked by QuickCheck)"
   [ QC.testProperty "sort == sort . reverse" $
@@ -36,13 +23,4 @@ qcProps = testGroup "(checked by QuickCheck)"
     \x -> (x) <= 0 QC.==> Snake.shrink x == 0
   , QC.testProperty "my addition" $ -- my first quickCheck
     \x -> (((x :: Integer) + 1) > x) == True
-  ]
-
-unitTests = testGroup "Unit tests"
-  [ testCase "List comparison (different length)" $
-      [1, 2, 3] `compare` [1,2] @?= GT
-
-  -- the following test does not hold
-  , testCase "List comparison (same length)" $
-      [1, 2, 3] `compare` [1,2,2] @?= LT
   ]
