@@ -104,8 +104,10 @@ foodUnderHead c model = any id $ map (\x-> c == x) (take 3 (snake model))
 foodEaten :: Model -> Bool
 foodEaten model = members (foodItems model) (take 5 (snake model))
 
+member :: Eq a => a -> [a] -> Bool
 member e l = any id $ map (\x -> x == e) l
 
+members :: Eq a => [a] -> [a] -> Bool
 members ee l = any id $ map (\e -> member e l) ee
 
 headBitSnake :: Model -> Bool
@@ -196,12 +198,12 @@ cook :: Model -> Model
 cook model =
   if foodEaten model
   then model { gameField = detectCollision model
-             , snakeLength = (snakeLength model) +1
+             , snakeLength = (snakeLength model)
              , foodItems = filter (\c -> not (foodUnderHead c model)) (foodItems model)
              , debugData = [(show ("food",foodItems model,"snake", (snake model)))]
              , eaten = (eaten model) + 1 }
   else model { gameField = detectCollision model
-             , snakeLength = shrink (snakeLength model)
+             , snakeLength = (snakeLength model)
              , debugData = (debugData model) ++["-"] }
 
 updateGlobalModel :: Msg -> Model -> Model
