@@ -198,11 +198,11 @@ cook model =
   then model { gameField = detectCollision model
              , snakeLength = (snakeLength model) +1
              , foodItems = filter (\c -> not (foodUnderHead c model)) (foodItems model)
-             , debugData = ["" ++ (show ("food",foodItems model,"snake", (snake model)))]
+             , debugData = [(show ("food",foodItems model,"snake", (snake model)))]
              , eaten = (eaten model) + 1 }
   else model { gameField = detectCollision model
              , snakeLength = shrink (snakeLength model)
-             , debugData = (debugData model) }
+             , debugData = (debugData model) ++["-"] }
 
 updateGlobalModel :: Msg -> Model -> Model
 updateGlobalModel (Tick) rawModel = updateTickFields model
