@@ -61,7 +61,7 @@ data Model = Model {
   , eaten :: Int
   , foodItems :: FoodItems
   , gameField :: GameField
-  , snakeLength :: Int
+  , growBy :: Int
   , heading :: Heading
   , height :: Int
   , lastKey :: LastKey        -- different in Elm version
@@ -79,7 +79,7 @@ initialModel = Model { debugData = []
                      , eaten = 0
                      , foodItems = []
                      , gameField = Move
-                     , snakeLength = 1
+                     , growBy = 1
                      , heading = HeadingRight
                      , Snake.height = 400
                      , lastKey = 32
@@ -98,11 +98,12 @@ initGlobalModel = newIORef initialModel
 shrink :: Int -> Int
 shrink n = if (n-1) > 0 then n-1 else 0
 
+-- foodUnderHead is wrong
 foodUnderHead :: Coordinate -> Model -> Bool
-foodUnderHead c model = any id $ map (\x-> c == x) (take 3 (snake model))
+foodUnderHead c model = any id $ map (\x-> c == x) (take 1 (snake model))
 
 foodEaten :: Model -> Bool
-foodEaten model = members (foodItems model) (take 5 (snake model))
+foodEaten model = members (foodItems model) (take 2 (snake model))
 
 member :: Eq a => a -> [a] -> Bool
 member e l = any id $ map (\x -> x == e) l
@@ -198,12 +199,12 @@ cook :: Model -> Model
 cook model =
   if foodEaten model
   then model { gameField = detectCollision model
-             , snakeLength = (snakeLength model)
+             , growBy = (growBy model) + 1
              , foodItems = filter (\c -> not (foodUnderHead c model)) (foodItems model)
              , debugData = [(show ("food",foodItems model,"snake", (snake model)))]
              , eaten = (eaten model) + 1 }
   else model { gameField = detectCollision model
-             , snakeLength = (snakeLength model)
+             , growBy = shrink (growBy model)
              , debugData = (debugData model) ++["-"] }
 
 updateGlobalModel :: Msg -> Model -> Model
@@ -259,7 +260,7 @@ moveSnake2 model headingv =
     HeadingDown ->  (fst uhs, snd uhs+1) : snakeGrower growth snake'
     None ->         snakeGrower growth snake'
   where snake' = snake model
-        growth = snakeLength model
+        growth = growBy model
         uhs = head snake'
 
 -- main ----------------------------------------
