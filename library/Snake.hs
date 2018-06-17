@@ -5,6 +5,7 @@ module Snake (main, shrink) where
 
 -- import Debug.Trace
 import System.Random
+import Data.List
 import Data.IORef ( IORef
                   , newIORef
                   , readIORef
@@ -190,8 +191,8 @@ drawCanvas canvas model = do
 data Msg = Tick | Keypress LastKey deriving (Show)
 
 randomCoord :: (Int, Int) -> Snake -> Int -> [Coordinate]
-randomCoord size _ seedn = take 3 $ zipped
-  where xrand = maxRandoms (fst size) seedn
+randomCoord size snakecc seedn = take 10 (nub (filter (\x->  (not (member x snakecc))) $ take 150 zipped))
+  where xrand = maxRandoms (fst size) ((fst (head snakecc)) + seedn)
         yrand = maxRandoms (snd size) seedn
         maxRandoms m seedx = randomRs (0+2, m+2) (mkStdGen seedx)
         zipped = zip xrand yrand
