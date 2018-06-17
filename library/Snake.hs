@@ -189,11 +189,12 @@ drawCanvas canvas model = do
 
 data Msg = Tick | Keypress LastKey deriving (Show)
 
-randomCoord :: (Int, Int) -> Int -> [Coordinate]
-randomCoord size seedn = take 1 $ zip xrand yrand
+randomCoord :: (Int, Int) -> Snake -> Int -> [Coordinate]
+randomCoord size _ seedn = take 3 $ zipped
   where xrand = maxRandoms (fst size) seedn
         yrand = maxRandoms (snd size) seedn
         maxRandoms m seedx = randomRs (0+2, m+2) (mkStdGen seedx)
+        zipped = zip xrand yrand
 
 cook :: Model -> Model
 cook model =
@@ -212,7 +213,7 @@ updateGlobalModel (Tick) rawModel = updateTickFields model
   where model = cook rawModel
         moreFood model' =
           if ((foodItems model') == [])
-          then (randomCoord (13, 13) (seed model))
+          then (randomCoord (13, 13) (snake model) (seed model))
           else foodItems model'
         updateTickFields m = m { gameField = updateGamefield False model (lastKey model)
                                , foodItems = moreFood model
