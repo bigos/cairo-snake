@@ -149,6 +149,10 @@ keyToHeading lk lh
   | lk == 65364 && lh /= HeadingUp    = HeadingDown
   | otherwise = None
 
+ifNoneThen :: Heading -> Heading -> Heading
+None `ifNoneThen` v = v
+h    `ifNoneThen` _ = h
+
 -- view ----------------------------------------
 
 drawCanvas :: Gtk.DrawingArea -> Model -> Render ()
@@ -219,11 +223,10 @@ updateGlobalModel (Tick) rawModel = updateTickFields model
 updateGlobalModel (Keypress kv) oldModel = updateFields model
     where model = cook oldModel
           newKv      = fromIntegral kv
-          -- newHeading = keyToHeading ifNoneThen newKv (heading model)
           newHeading = keyToHeading newKv (heading model)
           updateFields m = m { seed = succ $ seed model
                              , lastKey = newKv
-                             , heading = newHeading
+                             , heading = newHeading `ifNoneThen` (heading model)
                              , gameField = updateGamefield True model kv
                              , snake = moveSnake model (heading model) }
 
