@@ -5,7 +5,7 @@ module Snake (main, shrink) where
 
 -- import Debug.Trace
 import System.Random
-import Data.List
+import Data.List (nub)
 import Data.IORef ( IORef
                   , newIORef
                   , readIORef
@@ -141,17 +141,13 @@ getWidgetSize widget = do
   height' <- fromIntegral <$> Gtk.widgetGetAllocatedHeight widget
   return (width', height')
 
-keyToHeading :: LastKey -> Heading
-keyToHeading lk
-  | lk == 65361 = HeadingLeft
-  | lk == 65362 = HeadingUp
-  | lk == 65363 = HeadingRight
-  | lk == 65364 = HeadingDown
+keyToHeading :: LastKey -> Heading -> Heading
+keyToHeading lk lh
+  | lk == 65361 && lh /= HeadingRight = HeadingLeft
+  | lk == 65362 && lh /= HeadingDown  = HeadingUp
+  | lk == 65363 && lh /= HeadingLeft  = HeadingRight
+  | lk == 65364 && lh /= HeadingUp    = HeadingDown
   | otherwise = None
-
-ifNoneThen :: Heading -> Heading -> Heading
-None `ifNoneThen` v = v
-h    `ifNoneThen` _ = h
 
 -- view ----------------------------------------
 
@@ -223,7 +219,8 @@ updateGlobalModel (Tick) rawModel = updateTickFields model
 updateGlobalModel (Keypress kv) oldModel = updateFields model
     where model = cook oldModel
           newKv      = fromIntegral kv
-          newHeading = keyToHeading newKv `ifNoneThen` heading model
+          -- newHeading = keyToHeading ifNoneThen newKv (heading model)
+          newHeading = keyToHeading newKv (heading model)
           updateFields m = m { seed = succ $ seed model
                              , lastKey = newKv
                              , heading = newHeading
@@ -267,10 +264,6 @@ moveSnake2 model headingv =
         uhs = head snake'
 
 -- main ----------------------------------------
-
--- timerFun g c = (atomicModifyIORef' g (\p -> (updateGlobalModel Tick p, ()))) >>
---   Gtk.widgetQueueDraw c >>
---   return True
 
 timerFun :: IORef Model -> Gtk.DrawingArea -> IO Bool
 timerFun g c = do
