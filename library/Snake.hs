@@ -217,7 +217,7 @@ updateGlobalModel (Tick) rawModel = updateTickFields model
         updateTickFields m = m { gameField = updateGamefield False model (lastKey model)
                                , foodItems = moreFood model
                                , snake = moveSnake model (heading model) }
-updateGlobalModel (Keypress kv) oldModel = updateFields oldModel
+updateGlobalModel (Keypress kv) oldModel = updateFields oldModel -- using oldModel could be a bug
     where model = cook oldModel
           newKv      = fromIntegral kv
           newHeading = keyToHeading newKv `ifNoneThen` heading model
