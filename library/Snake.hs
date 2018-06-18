@@ -170,7 +170,7 @@ drawCanvas canvas model = do
 
   -- draw snakes food
   setSourceRGB 0.4 0.6 0.1
-  setLineWidth 13
+  setLineWidth $ fromIntegral s
   mapM_ (\c -> moveTo (xc s c) (yc s c) >> lineTo (xc s c) (yc s c)) (foodItems model)
   stroke
 
@@ -179,7 +179,7 @@ drawCanvas canvas model = do
     Move      -> setSourceRGB 0 0.5 1
     Collision -> setSourceRGB 1 1 0.5
     _         -> setSourceRGB 0.4 0.4 0.4
-  setLineWidth 5
+  setLineWidth $ fromIntegral s
   moveTo (xc s (head (snake model))) (yc s (head (snake model)))
   mapM_ (\c -> lineTo (xc s c) (yc s c)) (snake model)
   stroke
