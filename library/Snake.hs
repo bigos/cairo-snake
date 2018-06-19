@@ -160,17 +160,16 @@ drawCanvas canvas model = do
   size <- getWidgetSize canvas
   let mwidth  = fromIntegral (fst size) :: Int
       mheight = fromIntegral (snd size) :: Int
-      s = div (min mwidth mheight) 20
+      s = div (min mwidth mheight) 15
 
   -- drawing changes color when you press 'a' on keyboard
-  if (lastKey model) == 97 then setSourceRGB 0.9 0.5 0 else setSourceRGB 0.6 0.9 0
-  setLineWidth $ fromIntegral (s * 10)
+  setSourceRGB 0.6 0.9 0
   setLineCap LineCapRound
   setLineJoin LineJoinRound
 
   -- draw snakes food
   setSourceRGB 0.4 0.6 0.1
-  setLineWidth $ fromIntegral (s * 2)
+  setLineWidth $ fromIntegral (s * 1)
   mapM_ (\c -> moveTo (xc s c) (yc s c) >> lineTo (xc s c) (yc s c)) (foodItems model)
   stroke
 
@@ -179,7 +178,7 @@ drawCanvas canvas model = do
     Move      -> setSourceRGB 0 0.5 1
     Collision -> setSourceRGB 1 1 0.5
     _         -> setSourceRGB 0.4 0.4 0.4
-  setLineWidth $ fromIntegral s
+  setLineWidth $ fromIntegral (s - (s `div` 20) )
   moveTo (xc s (head (snake model))) (yc s (head (snake model)))
   mapM_ (\c -> lineTo (xc s c) (yc s c)) (snake model)
   stroke
