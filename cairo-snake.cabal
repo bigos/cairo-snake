@@ -34,6 +34,7 @@ library
   ghc-options: -Wall
   build-depends:
                 base
+              , text -any
               , gi-gtk >= 3.0
               , haskell-gi-base -any
               , gi-glib -any

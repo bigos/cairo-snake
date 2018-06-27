@@ -5,6 +5,7 @@ module Snake (main, shrink) where
 
 -- import Debug.Trace
 import System.Random
+import Data.Text (pack)
 import Data.List (nub)
 import Data.IORef ( IORef
                   , newIORef
@@ -27,6 +28,7 @@ import qualified GI.Gtk as Gtk ( DrawingArea
                                , onWidgetDestroy
                                , onWidgetDraw
                                , onWidgetKeyPressEvent
+                               , setWindowTitle
                                , widgetGetAllocatedHeight
                                , widgetGetAllocatedWidth
                                , widgetQueueDraw
@@ -268,10 +270,12 @@ moveSnake2 model headingv =
 
 -- main ----------------------------------------
 
-timerFun :: IORef Model -> Gtk.DrawingArea -> IO Bool
-timerFun g c = do
+--timerFun :: IORef Model -> Gtk.DrawingArea -> IO Bool
+timerFun g c win = do
   atomicModifyIORef' g $ \p -> (updateGlobalModel Tick p, ())
   Gtk.widgetQueueDraw c
+  model <- readIORef g
+  Gtk.setWindowTitle win (pack ("cairo snake " ++ (show (eaten model)) ))
   return True
 
 drawFun :: IORef Model -> Gtk.DrawingArea -> GICairo.Context -> IO Bool
@@ -303,7 +307,7 @@ main = do
   canvas <- Gtk.drawingAreaNew
   Gtk.containerAdd win canvas
 
-  _ <- GI.GLib.timeoutAdd GI.GLib.Constants.PRIORITY_DEFAULT 250 (timerFun globalModel canvas)
+  _ <- GI.GLib.timeoutAdd GI.GLib.Constants.PRIORITY_DEFAULT 250 (timerFun globalModel canvas win)
 
   _ <- Gtk.onWidgetDraw canvas $ \context -> drawFun globalModel canvas context
 
