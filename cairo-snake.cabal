@@ -44,7 +44,7 @@ library
               , transformers -any
               , array -any
               , gi-cairo -any
-              , random -any
+              , random -any 
               , cairo >=0.13.1.1 && <0.14
   exposed-modules:
       Snake
